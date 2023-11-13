@@ -7,7 +7,7 @@ type params = {
     email: string
 }
 
-export async function GET(req : NextApiRequest) {
+export async function GET(req : Request) {
     try {
         const email = req.url?.split("/")[5]
             const userDb = await prisma.users.findUnique({
