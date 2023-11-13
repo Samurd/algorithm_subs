@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  name String?
+  email String @unique
+  image String?
+  subscription Subcriptions?
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Subscriptions User's
+
+
+enum SubscriptionFrequency {
+  monthly
+  yearly
+}
+
+
+model Subcriptions {
+  id Int @id @default(autoincrement())
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int @unique
+  subscriptionPlan SubscriptionPlans @relation(fields: [subscriptionPlanId], references: [id], onDelete: Cascade)
+  subscriptionPlanId Int
+  frequency SubscriptionFrequency @default(monthly)
+  isActive Boolean @default(true)
+  renewsAt DateTime?
+  startsAt DateTime @default(now())
+  endsAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+// Plans
+
+
+enum TypeSubcription {
+  free
+  Pro
+}
+
+
+model SubscriptionPlans {
+  id Int @id @default(autoincrement())
+  productId String?
+  variants String[]
+  typeSubcription TypeSubcription @unique @default(free)
+  name String 
+  description String
+  priceMonthly Float @default(0)
+  priceYearly Float @default(0)
+  hrefMonthly String? 
+  hrefYearly String?
+  features String[]
+  mostPopular Boolean @default(false)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  subscription Subcriptions[]
+}
