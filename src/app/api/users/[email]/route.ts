@@ -3,14 +3,10 @@ import {NextApiRequest} from "next"
 import prisma from '@/lib/db';
 
 
-type params = {
-    email: string
-}
-
 export async function GET(req : Request) {
     try {
         const email = req.url?.split("/")[5]
-            const userDb = await prisma.users.findUnique({
+            const userDb = await prisma.user.findUnique({
                 where: {
                     email: email
                 },

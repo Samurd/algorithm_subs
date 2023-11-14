@@ -1,23 +1,18 @@
 import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
 import prisma from '@/lib/db';
 import { LemonSqueezyResponse } from "@/types/lemonSqueezyRes";
+import { getAuthSession } from "@/lib/auth";
 
 
 export async function POST(req: Request, res: Response) {
     try {
         const data : LemonSqueezyResponse = await req.json()
+        const session = await getAuthSession()
         if(data) {
-            console.log(data);
-            const findUser = await prisma.users.findFirst({
-                where: {
-                    email: data.data.attributes.user_email
-                }
-            })
 
             const updatePlanUser = await prisma.subcriptions.update({
                 where: {
-                    userId: findUser?.id
+                    userId: session?.user.id
                 },
                 data: {
                     subscriptionPlanId: 2,
@@ -29,7 +24,6 @@ export async function POST(req: Request, res: Response) {
 
             console.log(updatePlanUser)
 
-            return redirect("/")
         }
     } catch (error) {
         if(error instanceof Error) {

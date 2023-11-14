@@ -5,6 +5,7 @@ import prisma from './db';
 
 export const authOptions : NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
+    adapter: PrismaAdapter(prisma),
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -14,20 +15,41 @@ export const authOptions : NextAuthOptions = {
     ],
     callbacks: {
         async session({session, user}) {
-
             if(session.user) {
-                const findUserDb = await prisma.users.findFirst({
+                const userPlan = await prisma.subcriptions.findFirst({
                     where: {
-                        email: session.user?.email as string
+                        userId: session.user.id
+                    },
+                    include: {
+                        subscriptionPlan: true
+                    }
+                })
+                session.user.email = user.email;
+                session.user.image = user.image;
+                session.user.name = user.name;
+                session.user.id = user.id;
+                
+                session.user.plan = userPlan?.subscriptionPlan.typeSubcription == "free" ? "Free" : "Pro"
+            }
+            
+            return session
+        }
+
+    },
+    events: {
+        createUser: async ({user}) => {
+                const findUserDb = await prisma.user.findFirst({
+                    where: {
+                        id: user.id
                     }
                 })
 
                 if(!findUserDb) {
-                    const createUserDb = await prisma.users.create({
+                    const createUserDb = await prisma.user.create({
                         data: {
-                            name: session.user?.name,
-                            email: session.user?.email as string,
-                            image: session.user?.image
+                            name: user.name,
+                            email: user.email as string,
+                            image: user.image
                         }
                     })
 
@@ -39,18 +61,18 @@ export const authOptions : NextAuthOptions = {
                         }
                     })
                     
+                } else {
+                    const createSubscriptionUser = await prisma.subcriptions.create({
+                        data: {
+                            userId: user.id,
+                            subscriptionPlanId: 1,
+                            
+                        }
+                    })
                 }
 
-                
-            }
-
-            
-
-
-            return session
-
-        },
-    },
+        }
+    }
 }
 
 
