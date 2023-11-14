@@ -56,7 +56,7 @@ export const authOptions : NextAuthOptions = {
                     const createSubscriptionUser = await prisma.subcriptions.create({
                         data: {
                             userId: createUserDb.id,
-                            subscriptionPlanId: 1,
+                            subscriptionPlanId: 2
                             
                         }
                     })
@@ -65,7 +65,7 @@ export const authOptions : NextAuthOptions = {
                     const createSubscriptionUser = await prisma.subcriptions.create({
                         data: {
                             userId: user.id,
-                            subscriptionPlanId: 1,
+                            subscriptionPlanId: 2,
                             
                         }
                     })
