@@ -1,7 +1,6 @@
 "use client"
 
 import { Plan } from "@/types/plans"
-import { UserData } from "@/types/userData"
 import {
     Card,
     CardContent,
@@ -23,11 +22,10 @@ import ButtonSignIn from "./BtnSignIn"
 
 type Props = {
     plans: Plan[]
-    userData: UserData
 }
 
 
-export default function Plans({ plans, userData }: Props) {
+export default function Plans({ plans}: Props) {
     const { data: session } = useSession()
 
     return (
@@ -50,7 +48,7 @@ export default function Plans({ plans, userData }: Props) {
                             </CardHeader>
 
                             <CardFooter>
-                                {session ? plan.hrefYearly && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefYearly + `?checkout[email]=${userData.UserData.email}`}>Upgrade</a>
+                                {session ? plan.hrefYearly && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefYearly + `?checkout[email]=${session.user.email}`}>Upgrade</a>
 
                                     :
                                     <ButtonSignIn />
@@ -74,7 +72,7 @@ export default function Plans({ plans, userData }: Props) {
                             </CardHeader>
 
                             <CardFooter>
-                                {session ? plan.hrefYearly && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefYearly + `?checkout[email]=${userData.UserData.email}`}>Upgrade</a>
+                                {session ? plan.hrefYearly && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefYearly + `?checkout[email]=${session.user.email}`}>Upgrade</a>
 
                                     :
                                     <ButtonSignIn />

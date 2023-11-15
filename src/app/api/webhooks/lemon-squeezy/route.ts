@@ -9,14 +9,21 @@ export async function POST(req: Request, res: Response) {
         const data : LemonSqueezyResponse = await req.json()
         const session = await getAuthSession()
         if(data) {
+            
+            const getSubPlanByType = await prisma.subscriptionPlans.findFirst({
+                where: {
+                    typeSubcription: "pro"
+                }
+            })
+
 
             const updatePlanUser = await prisma.subcriptions.update({
                 where: {
                     userId: session?.user.id
                 },
                 data: {
-                    subscriptionPlanId: 2,
-                    frequency: "monthly",
+                    subscriptionPlanId: getSubPlanByType?.id,
+                    frequency: data.data.attributes.variant_name == "Monthly" ? "monthly" : "yearly",
                     renewsAt: data.data.attributes.renews_at,
                     endsAt: data.data.attributes.ends_at
                 } 

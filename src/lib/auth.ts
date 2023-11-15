@@ -38,6 +38,12 @@ export const authOptions : NextAuthOptions = {
     },
     events: {
         createUser: async ({user}) => {
+            const getSubByType = await prisma.subscriptionPlans.findFirst({
+                where: {
+                    typeSubcription: "free"
+                }
+            })
+
                 const findUserDb = await prisma.user.findFirst({
                     where: {
                         id: user.id
@@ -53,10 +59,11 @@ export const authOptions : NextAuthOptions = {
                         }
                     })
 
+
                     const createSubscriptionUser = await prisma.subcriptions.create({
                         data: {
                             userId: createUserDb.id,
-                            subscriptionPlanId: 2
+                            subscriptionPlanId: getSubByType!.id 
                             
                         }
                     })
@@ -65,7 +72,7 @@ export const authOptions : NextAuthOptions = {
                     const createSubscriptionUser = await prisma.subcriptions.create({
                         data: {
                             userId: user.id,
-                            subscriptionPlanId: 2,
+                            subscriptionPlanId: getSubByType!.id,
                             
                         }
                     })
