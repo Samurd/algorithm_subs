@@ -7,9 +7,8 @@ import { getAuthSession } from "@/lib/auth";
 export async function POST(req: Request, res: Response) {
     try {
         const data : LemonSqueezyResponse = await req.json()
-        const session = await getAuthSession()
         if(data) {
-            
+            const session = await getAuthSession()
             const getSubPlanByType = await prisma.subscriptionPlans.findFirst({
                 where: {
                     typeSubcription: "pro"
@@ -19,7 +18,7 @@ export async function POST(req: Request, res: Response) {
 
             const updatePlanUser = await prisma.subcriptions.update({
                 where: {
-                    userId: session!.user.id
+                    userId: session?.user.id
                 },
                 data: {
                     subscriptionPlanId: getSubPlanByType!.id,
