@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
 import prisma from '@/lib/db';
 import { LemonSqueezyResponse } from "@/types/lemonSqueezyRes";
-import { getAuthSession } from "@/lib/auth";
 
 
 export async function POST(req: Request, res: Response) {
     try {
         const data : LemonSqueezyResponse = await req.json()
         if(data) {
-            const session = await getAuthSession()
+            const userData =  await prisma.user.findFirst({
+                where: {
+                    email: data.data.attributes.user_email
+                }
+            })
+
             const getSubPlanByType = await prisma.subscriptionPlans.findFirst({
                 where: {
                     typeSubcription: "pro"
@@ -18,7 +22,7 @@ export async function POST(req: Request, res: Response) {
 
             const updatePlanUser = await prisma.subcriptions.update({
                 where: {
-                    userId: session?.user.id
+                    userId: userData?.id
                 },
                 data: {
                     subscriptionPlanId: getSubPlanByType!.id,
