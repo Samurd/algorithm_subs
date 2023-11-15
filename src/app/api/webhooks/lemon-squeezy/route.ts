@@ -19,10 +19,10 @@ export async function POST(req: Request, res: Response) {
 
             const updatePlanUser = await prisma.subcriptions.update({
                 where: {
-                    userId: session?.user.id
+                    userId: session!.user.id
                 },
                 data: {
-                    subscriptionPlanId: getSubPlanByType?.id,
+                    subscriptionPlanId: getSubPlanByType!.id,
                     frequency: data.data.attributes.variant_name == "Monthly" ? "monthly" : "yearly",
                     renewsAt: data.data.attributes.renews_at,
                     endsAt: data.data.attributes.ends_at
