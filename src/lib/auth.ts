@@ -16,6 +16,10 @@ export const authOptions : NextAuthOptions = {
     callbacks: {
         async session({session, user}) {
             if(session.user) {
+                session.user.email = user.email;
+                session.user.image = user.image;
+                session.user.name = user.name;
+                session.user.id = user.id;
                 const userPlan = await prisma.subcriptions.findFirst({
                     where: {
                         userId: session.user.id
@@ -24,12 +28,14 @@ export const authOptions : NextAuthOptions = {
                         subscriptionPlan: true
                     }
                 })
-                session.user.email = user.email;
-                session.user.image = user.image;
-                session.user.name = user.name;
-                session.user.id = user.id;
-                
-                session.user.plan = userPlan?.subscriptionPlan.typeSubcription == "free" ? "Free" : "Pro"
+
+
+
+                if(userPlan) {
+                    session.user.plan = userPlan.subscriptionPlan.typeSubcription === "free" ? "free" : "pro"
+
+                    session.user.frequency = userPlan.frequency === "monthly" ? "monthly" : "yearly"
+                }
             }
             
             return session

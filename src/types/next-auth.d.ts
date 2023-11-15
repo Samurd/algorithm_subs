@@ -6,6 +6,7 @@ declare module "next-auth" {
         /** The user's postal address. */
         id: string
         plan: string
+        frequency: string
       } & DefaultSession["user"] // To keep the default types
     }
 }

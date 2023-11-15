@@ -8,8 +8,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarImage } from "./ui/avatar"
 import Link from "next/link";
-import axios from "axios";
-import { UserData } from "@/types/userData";
 import { getAuthSession } from "@/lib/auth";
 import ButtonSignOut from "./BtnSignOut";
 import ButtonSignIn from "./BtnSignIn";
@@ -25,7 +23,7 @@ export default async function Navbar() {
                 <Link href={"/"}>Algorithm Subscription</Link>
 
                 <div className="flex items-center gap-2">
-                <span className="p-1 border-2 rounded-md border-gray-300 text-sm">{session.user.plan}</span>
+                <span className="p-1 border-2 rounded-md border-gray-300 text-sm">{session.user.plan.toUpperCase()}</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -60,7 +58,10 @@ export default async function Navbar() {
         return (
             <nav className="w-full p-2 bg-gray-100 flex items-center justify-between">
                 <Link href={"/"}>Algorithm Subscription</Link>
+                <div className="flex items-center gap-4">
+                <Link href={"/pricing"}>Pricing</Link>
                 <ButtonSignIn />
+                </div>
             </nav>
         )
     }

@@ -17,15 +17,15 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { useSession } from "next-auth/react"
-import ButtonSignIn from "./BtnSignIn"
+import { signIn, useSession } from "next-auth/react"
+import { Button } from "./ui/button"
 
 type Props = {
     plans: Plan[]
 }
 
 
-export default function Plans({ plans}: Props) {
+export default function Plans({ plans }: Props) {
     const { data: session } = useSession()
 
     return (
@@ -40,6 +40,11 @@ export default function Plans({ plans}: Props) {
                     {plans.map(plan => (
                         <Card key={plan.id}>
                             <CardHeader>
+                                {(session?.user.frequency === "monthly" && session?.user.plan === "pro" && plan.typeSubcription == "pro") && <p className="bg-secondary rounded-sm w-[80px] pl-1 text-sm font-medium">Your Plan</p>}
+
+                                {(session?.user.frequency === "monthly" && session?.user.plan === "free" && plan.typeSubcription === "free") && <p className="bg-secondary rounded-sm w-[80px] pl-1 text-sm font-medium">Your Plan</p>}
+
+
                                 <h2>{plan.priceMonthly} /Month</h2>
                                 <CardTitle>{plan.name}</CardTitle>
                                 <CardDescription>
@@ -48,10 +53,10 @@ export default function Plans({ plans}: Props) {
                             </CardHeader>
 
                             <CardFooter>
-                                {session ? plan.hrefYearly && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefYearly + `?checkout[email]=${session.user.email}`}>Upgrade</a>
+                                {session ? plan.hrefMonthly && session.user.plan === "free" && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefMonthly + `?checkout[email]=${session.user.email}`}>Upgrade</a>
 
                                     :
-                                    <ButtonSignIn />
+                                    <Button onClick={() => signIn()}>Upgrade</Button>
                                 }
                             </CardFooter>
                         </Card>
@@ -64,6 +69,10 @@ export default function Plans({ plans}: Props) {
                     {plans.map(plan => (
                         <Card key={plan.id}>
                             <CardHeader>
+                                {(session?.user.frequency === "yearly" && session?.user.plan === "pro" && plan.typeSubcription == "pro") && <p className="bg-secondary rounded-sm w-[80px] pl-1 text-sm font-medium">Your Plan</p>}
+
+                                {(session?.user.frequency === "yearly" && session?.user.plan === "free" && plan.typeSubcription === "free") && <p className="bg-secondary rounded-sm w-[80px] pl-1 text-sm font-medium">Your Plan</p>}
+
                                 <h2>{plan.priceYearly} /Yearly</h2>
                                 <CardTitle>{plan.name}</CardTitle>
                                 <CardDescription>
@@ -72,10 +81,10 @@ export default function Plans({ plans}: Props) {
                             </CardHeader>
 
                             <CardFooter>
-                                {session ? plan.hrefYearly && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefYearly + `?checkout[email]=${session.user.email}`}>Upgrade</a>
+                                {session ? plan.hrefYearly && session.user.plan === "free" && session.user.frequency === "monthly" && <a className="bg-black text-white p-1 px-2 rounded-md font-semibold" href={plan.hrefYearly + `?checkout[email]=${session.user.email}`}>Upgrade</a>
 
                                     :
-                                    <ButtonSignIn />
+                                    <Button onClick={() => signIn()}>Upgrade</Button>
                                 }
                             </CardFooter>
                         </Card>
